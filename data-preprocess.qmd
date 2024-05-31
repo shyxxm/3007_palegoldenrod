@@ -1,0 +1,53 @@
+---
+title: "Data Preprocess"
+format: html
+editor: visual
+---
+
+## Load library
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+
+## Load csv
+
+```{r}
+#| label: Load csv
+
+data <- read_csv("average-years-of-schooling-vs-corruption-perception-index.csv")
+
+data
+```
+
+## Data Cleanup
+
+```{r}
+#| label: Data Cleanup
+
+year_required <- c(2015, 2018)
+
+year_required
+
+# Remove year not 2015 and 2018
+data_2015_2018 <- data %>%
+  filter(Year %in% year_required)
+
+data_2015_2018
+```
+
+```{r}
+
+# get data in 2015
+data_merged <- data_2015_2018 %>%
+  filter(Year %in% c(2015, 2018)) %>%  # Filter for both years
+  pivot_wider(names_from = Year, values_from = -c(Entity, Year)) %>%  # Reshape to wide format
+  select(grep(pattern, names(.), value = TRUE, perl = TRUE)) %>% # Filter columns
+  rename_all(~sub("_.*", "", .))
+
+data_merged
+
+```
+
+
