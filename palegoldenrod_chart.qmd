@@ -5,14 +5,14 @@ editor: visual
 ---
 
 ## Load library
+
 ```{r}
 library(tidyverse)
 library(dplyr)
 library(countrycode)
 ```
 
-
-## Load csv
+## Data Preperation
 
 ```{r}
 #| label: load-csv
@@ -32,26 +32,26 @@ filtered_data <- data |>
   filter(Year %in% c(2018),if_all(-Continent, ~ !is.na(.)) | !is.na(Continent)) |>
   mutate(Continent = countrycode::countrycode(Code, "iso3c", "continent"),
          Continent = ifelse(Code == "OWID_KOS", "Europe", Continent))
-
 filtered_data
 
 ```
-
 
 ```{r}
 #| label: plot-data
 
 
 ggplot(filtered_data, aes(x = `Corruption Perception Index - Transparency International (2018)`, y = `Learning-Adjusted Years of School`, color = Continent)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(aes(size = `Population (historical estimates)`),) +
+  geom_smooth(
+    aes(weight = `Population (historical estimates)`),
+    color = "grey50",
+    method = "loess",
+    formula = y ~ x
+  )
   labs(title = "Average years of schooling vs Corruption Perception Index",
        x = "Corruption Perception Index - Transparency International (2018)",
        y = "Learning-Adjusted Years of School",
        color = "Continent") +
   theme_minimal()
 
-
 ```
-
-
