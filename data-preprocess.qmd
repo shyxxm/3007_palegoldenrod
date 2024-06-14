@@ -8,13 +8,14 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(countrycode)
 ```
 
 
 ## Load csv
 
 ```{r}
-#| label: Load csv
+#| label: load-csv
 
 data <- read_csv("average-years-of-schooling-vs-corruption-perception-index.csv")
 
@@ -24,29 +25,32 @@ data
 ## Data Cleanup
 
 ```{r}
-#| label: Data Cleanup
+#| label: filter-data
+#| warning: false
 
-year_required <- c(2015, 2018)
+filtered_data <- data |>
+  filter(Year %in% c(2018),if_all(-Continent, ~ !is.na(.)) | !is.na(Continent)) |>
+  mutate(Continent = countrycode::countrycode(Code, "iso3c", "continent"),
+         Continent = ifelse(Code == "OWID_KOS", "Europe", Continent))
 
-year_required
+filtered_data
 
-# Remove year not 2015 and 2018
-data_2015_2018 <- data %>%
-  filter(Year %in% year_required)
-
-data_2015_2018
 ```
 
+
 ```{r}
+#| label: plot-data
 
-# get data in 2015
-data_merged <- data_2015_2018 %>%
-  filter(Year %in% c(2015, 2018)) %>%  # Filter for both years
-  pivot_wider(names_from = Year, values_from = -c(Entity, Year)) %>%  # Reshape to wide format
-  select(grep(pattern, names(.), value = TRUE, perl = TRUE)) %>% # Filter columns
-  rename_all(~sub("_.*", "", .))
 
-data_merged
+ggplot(filtered_data, aes(x = `Corruption Perception Index - Transparency International (2018)`, y = `Learning-Adjusted Years of School`, color = Continent)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Average years of schooling vs Corruption Perception Index",
+       x = "Corruption Perception Index - Transparency International (2018)",
+       y = "Learning-Adjusted Years of School",
+       color = "Continent") +
+  theme_minimal()
+
 
 ```
 
