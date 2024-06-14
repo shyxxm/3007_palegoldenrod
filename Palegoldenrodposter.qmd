@@ -1,10 +1,11 @@
 ---
-title: Visualizing Measles Incidence in the USA (1928--2001)
+title: Visualizing Relationship Between Education and Corruption (2018)
 format:
   poster-typst: 
     size: "33x23" # Approximately A1
-    poster-authors: "Michael T. Gastner"
-    departments: "Information and Communication Technologies"
+    poster-authors: "Chang Kai Wen, Ho Zheng Wei, Jonathan Au Wai Chong, Lim Kei Yiang, Shyam Prasad, Tong Huiqing, Glennice 
+"
+    departments: "Palegoldenrod"
     institution-logo: "./images/sit-logo.png"
     footer-text: "Information Visualization 2024"
     footer-emails: "michael.gastner@singaporetech.edu.sg"
@@ -24,49 +25,37 @@ library(knitr)
 
 # Introduction
 
-Measles is a highly contagious viral infection that can lead to severe complications, including pneumonia, encephalitis, and death. The average number of secondary cases resulting from a single infected individual is estimated to be between 10 and 16,[^guerra_basic_2017] but vaccination is reported to be 97% effective at preventing measles[^franconeri_two-dose_2023]. Consequently, the introduction of the vaccine in 1963 was followed by a significant decline in measles incidence in the USA.
+Education and corruption represent critical dimensions in understanding the socioeconomic fabric of nations worldwide. A growing body of research has identified a robust correlation between levels of educational attainment and perceptions of corruption across countries. This relationship suggests that societies with higher average years of schooling tend to exhibit lower levels of corruption, as measured by indices such as Transparency International's Corruption Perception Index. Moreover, studies such as those by Glaeser and Saks (2006) underscore the potential causal link between education and reduced corruption, illustrating how historical educational legacies can influence contemporary governance outcomes. This introduction sets the stage for exploring the nuanced interplay between education and corruption, emphasizing the multifaceted factors that contribute to these complex societal dynamics.
 
 [^guerra_basic_2017]: F. M. Guerra et al., “The basic reproduction number (R0) of measles: a systematic review,” The Lancet Infectious Diseases, vol. 17, no. 12, p. e420-e428, 2017
 [^franconeri_two-dose_2023]: L. Franconeri et al., “Two-dose measles vaccine effectiveness remains high over time: A French observational study, 2017–2019,” Vaccine, vol. 41, no. 39, pp. 5797–5804, 2023]
 
-Given persistent skepticism in some communities about the efficacy of vaccines, it is important to communicate the impact of vaccination on public health. In this project, we built on a visualization of the measles incidence in the USA published by the Wall Street Journal[^debold_battling_2015] (@fig-wsj-on-poster). This visualization has garnered praise as "One of the more compelling data visualizations produced in recent years"[^lee_reproducing_2017]. However, we contend that, despite its effectiveness in summarizing data, several aspects of the plot can be improved.
+<!-- Given persistent skepticism in some communities about the efficacy of vaccines, it is important to communicate the impact of vaccination on public health. In this project, we built on a visualization of the measles incidence in the USA published by the Wall Street Journal[^debold_battling_2015] (@fig-wsj-on-poster). This visualization has garnered praise as "One of the more compelling data visualizations produced in recent years"[^lee_reproducing_2017]. However, we contend that, despite its effectiveness in summarizing data, several aspects of the plot can be improved. -->
 
 [^lee_reproducing_2017]: <https://www.mikelee.co/posts/2017-06-28-wsj-measles-vaccination-chart>
 
 
 # Previous Visualization
 
-# ```{r}
-# #| label: fig-wsj-on-poster
-# #| fig-cap: "Measles incidence by state of the USA and year, published by the
-# #|   Wall Street Journal."
-# #| out-width: 100%
-# 
-# include_graphics("images/wsj_cropped.png")
-# ```
+```{r}
+#| label: fig-wsj-on-poster
+#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2020"
+#| out-width: 100%
+
+include_graphics("images/Previouschart.png")
+```
 
 [^debold_battling_2015]: <https://graphics.wsj.com/infectious-diseases-and-vaccines/>
 
 # Strengths
 
-*   The heatmap design effectively conveys a high information content without
-    cluttering the plot.
-*   Pointing with the mouse at a tile opens an infotip, enabling readers to
-    retrieve specific incidence data for a given state and
-    year (@fig-infotip_color_change). The infotip only occludes a small
-    portion of the plot, and the partial transparency of the infotip ensures
-    visibility of the tiles underneath.
-*   The vertical line indicating the year of vaccine introduction provides
-    valuable contextual information.
+*   Visual representation: The scatter plot effectively visualizes the relationship between learning-adjusted years of schooling and the Corruption Perception Index across various countries and regions.
 
-# ```{r}
-# #| label: fig-infotip_color_change
-# #| fig-cap: "Zoomed-in screenshot of the original plot with and without
-# #|   activated infotip."
-# #| out-width: 100%
-# 
-# include_graphics("images/infotip_color_change.png")
-# ```
+*   Color coding: The use of different colors for different regions or continents makes it easier to identify and distinguish countries belonging to the same geographical area.
+
+*   Clear labeling: The countries and regions are labeled directly on the plot, allowing for easy identification and reference.
+
+*   Bubble size: The size of the bubbles (circles) represents the population of each country, providing an additional dimension of information.
 
 
 # Suggested Improvements
@@ -129,62 +118,62 @@ We used the Quarto publication framework and the R programming language, along w
 #v(2em)
 ```
 
-# Improved Visualization
+<!-- # Improved Visualization -->
 
-# ```{r}
-# #| label: fig-ggplot
-# #| fig-cap: "Revised visualization of measles incidence by state of the USA and
-# #|  year."
-# #| fig-width: 6.0
-# #| fig-height: 5.8
-# #| out-width: 100%
-# 
-# g <-
-#   ggplot(measles, aes(year + 0.5, state, fill = incidence + 1e-6)) +
-#   geom_tile(width = 0.75, height = 0.75) +
-#   geom_vline(xintercept = 1963, colour = "darkblue", linewidth = 1) +
-#   annotate(
-#     "label",
-#     label = "Vaccine introduced",
-#     x = 1963,
-#     y = 60, # 54.5,
-#     vjust = 1,
-#     hjust = 0
-#   ) +
-#   labs(
-#     x = "Year",
-#     y = NULL,
-#     fill = "Mean weekly incidence\n(per 100,000) if known",
-#     title = "Measles in the USA by State",
-#     caption = "Source: Project Tycho"
-#   ) +
-#   scale_x_continuous(expand = expansion(0.01, 0)) +
-#   scale_y_discrete(limits = rev, position = "right") +
-#   scale_fill_fermenter(
-#     breaks = 10^(-2:3),
-#     labels = prettyNum,
-#     trans = "log10",
-#     palette = "Reds",
-#     direction = 1,
-#     na.value = "#ffffff00",
-#   ) +
-#   guides(
-#     y = guide_axis(n.dodge = 2),
-#     fill = guide_coloursteps(frame.colour = "gray", direction = "horizontal")
-#   ) +
-#   theme_minimal() +
-#   theme(
-#     legend.key.size = unit(0.75, "cm"),
-#     legend.title = element_text(hjust = 1, vjust = 1),
-#     legend.position = "top",
-#     panel.grid.major.x = element_line(colour = "gray", linewidth = 0.5),
-#     panel.grid.minor.x = element_line(colour = "gray", linewidth = 0.5),
-#     panel.grid.major.y = element_line(colour = "gray", linewidth = c(0, 0.5)),
-#     plot.title = element_text(hjust = 0.5)
-#   )
-# g
-# ggsave("images/gg_measles.png", g, width = 6, height = 5.8)
-# ```
+<!-- ```{r} -->
+<!-- #| label: fig-ggplot -->
+<!-- #| fig-cap: "Revised visualization of measles incidence by state of the USA and -->
+<!-- #|  year." -->
+<!-- #| fig-width: 6.0 -->
+<!-- #| fig-height: 5.8 -->
+<!-- #| out-width: 100% -->
+
+<!-- g <- -->
+<!--   ggplot(measles, aes(year + 0.5, state, fill = incidence + 1e-6)) + -->
+<!--   geom_tile(width = 0.75, height = 0.75) + -->
+<!--   geom_vline(xintercept = 1963, colour = "darkblue", linewidth = 1) + -->
+<!--   annotate( -->
+<!--     "label", -->
+<!--     label = "Vaccine introduced", -->
+<!--     x = 1963, -->
+<!--     y = 60, # 54.5, -->
+<!--     vjust = 1, -->
+<!--     hjust = 0 -->
+<!--   ) + -->
+<!--   labs( -->
+<!--     x = "Year", -->
+<!--     y = NULL, -->
+<!--     fill = "Mean weekly incidence\n(per 100,000) if known", -->
+<!--     title = "Measles in the USA by State", -->
+<!--     caption = "Source: Project Tycho" -->
+<!--   ) + -->
+<!--   scale_x_continuous(expand = expansion(0.01, 0)) + -->
+<!--   scale_y_discrete(limits = rev, position = "right") + -->
+<!--   scale_fill_fermenter( -->
+<!--     breaks = 10^(-2:3), -->
+<!--     labels = prettyNum, -->
+<!--     trans = "log10", -->
+<!--     palette = "Reds", -->
+<!--     direction = 1, -->
+<!--     na.value = "#ffffff00", -->
+<!--   ) + -->
+<!--   guides( -->
+<!--     y = guide_axis(n.dodge = 2), -->
+<!--     fill = guide_coloursteps(frame.colour = "gray", direction = "horizontal") -->
+<!--   ) + -->
+<!--   theme_minimal() + -->
+<!--   theme( -->
+<!--     legend.key.size = unit(0.75, "cm"), -->
+<!--     legend.title = element_text(hjust = 1, vjust = 1), -->
+<!--     legend.position = "top", -->
+<!--     panel.grid.major.x = element_line(colour = "gray", linewidth = 0.5), -->
+<!--     panel.grid.minor.x = element_line(colour = "gray", linewidth = 0.5), -->
+<!--     panel.grid.major.y = element_line(colour = "gray", linewidth = c(0, 0.5)), -->
+<!--     plot.title = element_text(hjust = 0.5) -->
+<!--   ) -->
+<!-- g -->
+<!-- ggsave("images/gg_measles.png", g, width = 6, height = 5.8) -->
+<!-- ``` -->
 
 
 # Further Suggestions for Interactivity
