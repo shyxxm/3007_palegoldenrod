@@ -10,6 +10,8 @@ editor: visual
 library(tidyverse)
 library(dplyr)
 library(countrycode)
+library(scales)
+library(ggrepel)
 ```
 
 ## Data Preperation
@@ -29,10 +31,22 @@ data
 #| warning: false
 
 filtered_data <- data |>
-  filter(Year %in% c(2018),if_all(-Continent, ~ !is.na(.)) | !is.na(Continent)) |>
-  mutate(Continent = countrycode::countrycode(Code, "iso3c", "continent"),
-         Continent = ifelse(Code == "OWID_KOS", "Europe", Continent))
+  filter(
+    Year %in% c(2018),
+    if_all(-Continent, ~ !is.na(.)) | !is.na(Continent),
+    `Population (historical estimates)` > 1e6
+         ) |>
+  
+  mutate(
+    Continent = countrycode::countrycode(Code, "iso3c", "continent"),
+    Continent = ifelse(Code == "OWID_KOS", "Europe", Continent)
+         ) |>
+  arrange(desc(`Population (historical estimates)`))
+
 filtered_data
+
+largest_countries <- filtered_data |>
+  filter(`Population (historical estimates)` >= 1e9)
 
 ```
 
@@ -41,17 +55,25 @@ filtered_data
 
 
 ggplot(filtered_data, aes(x = `Corruption Perception Index - Transparency International (2018)`, y = `Learning-Adjusted Years of School`, color = Continent)) +
-  geom_point(aes(size = `Population (historical estimates)`),) +
+  geom_point(aes(size = `Population (historical estimates)`), alpha = 0.6) +
+  scale_size_area(
+    breaks = 10^(6:9),
+    labels = label_number(scale_cut = cut_short_scale()),
+    max_size = 15
+  ) +
   geom_smooth(
     aes(weight = `Population (historical estimates)`),
     color = "grey50",
     method = "loess",
     formula = y ~ x
-  )
-  labs(title = "Average years of schooling vs Corruption Perception Index",
-       x = "Corruption Perception Index - Transparency International (2018)",
-       y = "Learning-Adjusted Years of School",
-       color = "Continent") +
+  ) +
+  labs(
+    title = "Average years of schooling vs Corruption Perception Index",
+    x = "Corruption Perception Index - Transparency International (2018)",
+    y = "Learning-Adjusted Years of School",
+    color = "Continent"
+  ) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 5)))+
   theme_minimal()
 
 ```
