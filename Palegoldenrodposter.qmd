@@ -25,14 +25,14 @@ library(knitr)
 
 # Introduction
 
-Education and corruption represent critical dimensions in understanding the socioeconomic fabric of nations worldwide. A growing body of research has identified a robust correlation between levels of educational attainment and perceptions of corruption across countries. This relationship suggests that societies with higher average years of schooling tend to exhibit lower levels of corruption, as measured by indices such as Transparency International's Corruption Perception Index. Moreover, studies such as those by Glaeser and Saks (2006) underscore the potential causal link between education and reduced corruption, illustrating how historical educational legacies can influence contemporary governance outcomes. This introduction sets the stage for exploring the nuanced interplay between education and corruption, emphasizing the multifaceted factors that contribute to these complex societal dynamics.
+Education and corruption represent critical dimensions in understanding the socioeconomic fabric of nations worldwide. A growing body of research has identified a robust correlation between levels of educational attainment and perceptions of corruption across countries. This relationship suggests that societies with higher average years of schooling tend to exhibit lower levels of corruption, as measured by indices such as Transparency International's Corruption Perception Index. Moreover, studies such as those by Glaeser and Saks (2006) [^glaeser] underscore the potential causal link between education and reduced corruption, illustrating how historical educational legacies can influence contemporary governance outcomes. This introduction sets the stage for exploring the nuanced interplay between education and corruption, emphasizing the multifaceted factors that contribute to these complex societal dynamics.
 
 [^guerra_basic_2017]: F. M. Guerra et al., “The basic reproduction number (R0) of measles: a systematic review,” The Lancet Infectious Diseases, vol. 17, no. 12, p. e420-e428, 2017
 [^franconeri_two-dose_2023]: L. Franconeri et al., “Two-dose measles vaccine effectiveness remains high over time: A French observational study, 2017–2019,” Vaccine, vol. 41, no. 39, pp. 5797–5804, 2023]
 
 <!-- Given persistent skepticism in some communities about the efficacy of vaccines, it is important to communicate the impact of vaccination on public health. In this project, we built on a visualization of the measles incidence in the USA published by the Wall Street Journal[^debold_battling_2015] (@fig-wsj-on-poster). This visualization has garnered praise as "One of the more compelling data visualizations produced in recent years"[^lee_reproducing_2017]. However, we contend that, despite its effectiveness in summarizing data, several aspects of the plot can be improved. -->
 
-[^lee_reproducing_2017]: <https://www.mikelee.co/posts/2017-06-28-wsj-measles-vaccination-chart>
+[^glaeser]: Glaeser, E. L., & Saks, R. E. (2006). Corruption in America. Journal of public Economics, 90(6), 1053-1072.
 
 
 # Previous Visualization
@@ -47,9 +47,9 @@ include_graphics("images/Previouschart.png")
 
 [^debold_battling_2015]: <https://graphics.wsj.com/infectious-diseases-and-vaccines/>
 
-```{=typst}
-#v(11em)
-```
+<!-- ```{=typst} -->
+<!-- #v(11em) -->
+<!-- ``` -->
 
 # Strengths
 
@@ -80,6 +80,8 @@ include_graphics("images/Previouschart.png")
 1.  *Add a legend for population size* providing context about the scale of each country’s data.
 1.  *Divide into more sections* provides a clearer comparison of regions with different socio-economic backgrounds.
 
+1.  *Removing some of the lesser-known or less-popular countries* simplifies the visualization, reducing clutter and focusing attention on the more significant data points that are likely to be more familiar and relevant to the audience.
+
     
 [^colorbrewer]: <https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5>
     
@@ -89,16 +91,16 @@ include_graphics("images/Previouschart.png")
 
 ## Data
 
-*   Weekly counts of measles cases by state were obtained from Project
-    Tycho.[^panhuis_counts_2018] The data have missing weeks, which were
-    treated as zero in @fig-wsj-on-poster, potentially underestimating the
-    annual total. Instead, we calculated the weekly mean case count on the
-    basis of non-missing data only.
-*   Decennial U.S.\ census data for each state.[^stats_state_2023]
+*   The data compares learning-adjusted years of schooling and the Corruption Perception Index for 2020 [^corruption-perception-index]. Learning-adjusted years of schooling integrate both the quantity and quality of education, acknowledging that similar duration of schooling can lead to different learning outcomes. The Corruption Perception Index from Transparency International measures perceived corruption, with lower values indicating higher perceived corruption.
+*   We used data from the top 50 most popular countries [^top100].
+*   We edited the schooling index and corruption index to 0-100 to spread out the distribution of the geom points..
 
-[^panhuis_counts_2018]: <https://doi.org/10.25337/T7/ptycho.v2.0/US.14189004>
-[^stats_state_2023]: <https://www.stats.indiana.edu/population/PopTotals/historic_counts_states.asp>
 
+<!-- [^panhuis_counts_2018]: <https://doi.org/10.25337/T7/ptycho.v2.0/US.14189004> -->
+<!-- [^stats_state_2023]: <https://www.stats.indiana.edu/population/PopTotals/historic_counts_states.asp> -->
+[^corruption-perception-index]: <https://ourworldindata.org/grapher/average-years-of-schooling-vs-corruption-perception-index>
+
+[^top100]: <https://worldeducators.org/pages/top-100-countries-for-tourists>
 
 ## Software
 
@@ -190,9 +192,15 @@ include_graphics("images/final.png")
 
 # Further Suggestions for Interactivity
 
-Because our visualization was intended for a poster, we did not implement any interactive features, including the infotip. However, if the data are visualized in an HTML document, interactive features can be achieved using the R packages such as *plotly*. In that case, we recommend that the tile does not change its fill color. In contrast, the original visualization changes the fill color of the activated tile to light blue (see @fig-infotip_color_change), which can be misinterpreted as a change in incidence. Instead, we suggest highlighting the activated tile by thickening its border.
+Because our visualization was intended for a poster, we did not implement any interactive features, including the infotip. However, if the data are visualized in an HTML document, interactive features can be achieved using the R packages such as *plotly*. In that case we recommend customizing the hover information to provide detailed insights when users interact with the data points. This can be done by setting the tooltip parameter in ggplotly().
+
+
+
+<!-- In that case, we recommend that the tile does not change its fill color. In contrast, the original visualization changes the fill color of the activated tile to light blue (see @fig-infotip_color_change), which can be misinterpreted as a change in incidence. Instead, we suggest highlighting the activated tile by thickening its border. -->
 
 
 # Conclusion
 
-We successfully implemented all suggested improvements for the non-interactive visualization. By labeling every state and choosing a colorblind-friendly palette, the revised plot is more accessible. The logarithmic color scale makes the decrease in incidence after the introduction of the vaccine less striking but enables readers to detect patterns in the low-incidence range more easily.
+<!-- We successfully implemented all suggested improvements for the non-interactive visualization. By labeling every state and choosing a colorblind-friendly palette, the revised plot is more accessible. The logarithmic color scale makes the decrease in incidence after the introduction of the vaccine less striking but enables readers to detect patterns in the low-incidence range more easily. -->
+
+We successfully implemented all suggested improvements for the non-interactive visualization. By differentiating global regions with distinct colors and representing population sizes with bubble sizes, the plot effectively highlights the relationship between average years of schooling and the Corruption Perception Index across various countries. The choice of a colorblind-friendly palette ensures accessibility for a broader audience. The visual distinction between the Global North and Global South, along with the clear labeling of key countries, allows for easy interpretation of the data.
