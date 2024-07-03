@@ -39,7 +39,7 @@ Education and corruption represent critical dimensions in understanding the soci
 
 ```{r}
 #| label: fig-wsj-on-poster
-#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2020"
+#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2018"
 #| out-width: 100%
 
 include_graphics("images/Previouschart.png")
@@ -64,14 +64,6 @@ include_graphics("images/Previouschart.png")
 
 # Suggested Improvements
 
-<!-- 1.  *Add a plot title and a source note* so that the figure can be understood in -->
-<!--     isolation (e.g., when shared on social media). -->
-<!-- 1.  *Identify missing data clearly.*  Rendering unknown incidence fully -->
-<!--     transparent will distinguish it from zero incidence, -->
-<!-- 1.  *Include labels for every state.* To avoid overplotting, use two-letter -->
-<!--     abbreviations instead of full state names and stagger the labels along the -->
-<!--     y-axis. -->
-<!-- 1.  *Add a title to the color legend.* -->
 1.  *The inclusion of smoothing lines (trend lines).* It helps to visualize the general trends and relationships between the schooling index and the Corruption Perception Index within each global region.
 
 1.  *Use a discrete color palette.* Continuous palettes can make it
@@ -82,6 +74,8 @@ include_graphics("images/Previouschart.png")
 
 1.  *Removing some of the lesser-known or less-popular countries* simplifies the visualization, reducing clutter and focusing attention on the more significant data points that are likely to be more familiar and relevant to the audience.
 
+1.  *Misleading Title* : Correct the header for the graph to accurately indicate the year the data is sourced from.
+
     
 [^colorbrewer]: <https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5>
     
@@ -91,7 +85,7 @@ include_graphics("images/Previouschart.png")
 
 ## Data
 
-*   The data compares learning-adjusted years of schooling and the Corruption Perception Index for 2020 [^corruption-perception-index]. Learning-adjusted years of schooling integrate both the quantity and quality of education, acknowledging that similar duration of schooling can lead to different learning outcomes. The Corruption Perception Index from Transparency International measures perceived corruption, with lower values indicating higher perceived corruption.
+*   The data compares learning-adjusted years of schooling and the Corruption Perception Index for 2018 [^corruption-perception-index]. Learning-adjusted years of schooling integrate both the quantity and quality of education, acknowledging that similar duration of schooling can lead to different learning outcomes. The Corruption Perception Index from Transparency International measures perceived corruption, with lower values indicating higher perceived corruption.
 *   We used data from the top 50 most popular countries [^top100].
 *   We edited the schooling index and corruption index to 0-100 to spread out the distribution of the geom points..
 
