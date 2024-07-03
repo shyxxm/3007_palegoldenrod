@@ -3,12 +3,12 @@ title: Visualizing Relationship Between Education and Corruption (2018)
 format:
   poster-typst: 
     size: "33x23" # Approximately A1
-    poster-authors: "Chang Kai Wen, Ho Zheng Wei, Jonathan Au Wai Chong, Lim Kei Yiang, Shyam Prasad, Tong Huiqing, Glennice 
+    poster-authors: "Chang Kai Wen, Ho Zheng Wei, Jonathan Au Wai Chong, Lim Kei Yiang, Shyam Prasad, Tong Huiqing, Glennice
 "
     departments: "Palegoldenrod"
     institution-logo: "./images/sit-logo.png"
     footer-text: "Information Visualization 2024"
-    footer-emails: "michael.gastner@singaporetech.edu.sg"
+    footer-emails: "Palegoldenrod"
 execute:
   echo: false
 ---
@@ -47,6 +47,10 @@ include_graphics("images/Previouschart.png")
 
 [^debold_battling_2015]: <https://graphics.wsj.com/infectious-diseases-and-vaccines/>
 
+```{=typst}
+#v(11em)
+```
+
 # Strengths
 
 *   Visual representation: The scatter plot effectively visualizes the relationship between learning-adjusted years of schooling and the Corruption Perception Index across various countries and regions.
@@ -60,29 +64,22 @@ include_graphics("images/Previouschart.png")
 
 # Suggested Improvements
 
-1.  *Add a plot title and a source note* so that the figure can be understood in
-    isolation (e.g., when shared on social media).
-1.  *Identify missing data clearly.*  Rendering unknown incidence fully
-    transparent will distinguish it from zero incidence,
-1.  *Include labels for every state.* To avoid overplotting, use two-letter
-    abbreviations instead of full state names and stagger the labels along the
-    y-axis.
-1.  *Add a title to the color legend.*
-1.  *Avoid using a rainbow color palette.* It lacks a meaningful progression
-    through color space and is not colorblind-friendly. Consider using a
-    sequential ColorBrewer palette instead.[^colorbrewer]
+<!-- 1.  *Add a plot title and a source note* so that the figure can be understood in -->
+<!--     isolation (e.g., when shared on social media). -->
+<!-- 1.  *Identify missing data clearly.*  Rendering unknown incidence fully -->
+<!--     transparent will distinguish it from zero incidence, -->
+<!-- 1.  *Include labels for every state.* To avoid overplotting, use two-letter -->
+<!--     abbreviations instead of full state names and stagger the labels along the -->
+<!--     y-axis. -->
+<!-- 1.  *Add a title to the color legend.* -->
+1.  *The inclusion of smoothing lines (trend lines).* It helps to visualize the general trends and relationships between the schooling index and the Corruption Perception Index within each global region.
+
 1.  *Use a discrete color palette.* Continuous palettes can make it
     challenging for humans to detect patterns below just noticeable color
     differences.
-1.  *Apply a logarithmic color scale* because most data are below the mean
-    incidence.
-1.  *The x-axis should end at 2001* as there are no data afterwards.
-1.  *Add grid lines* in ten-year intervals along the x-axis and for every
-    second state along the y-axis. Grid lines will aid in identifying states
-    and years in the middle of the plot, even without the infotip.
-1.  Because there are more missing data on the right side of the plot,
-    *shifting y-axis labels to the right* will improve visually matching
-    states with corresponding grid lines.
+1.  *Add a legend for population size* providing context about the scale of each country’s data.
+1.  *Divide into more sections* provides a clearer comparison of regions with different socio-economic backgrounds.
+
     
 [^colorbrewer]: <https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5>
     
@@ -108,17 +105,32 @@ include_graphics("images/Previouschart.png")
 We used the Quarto publication framework and the R programming language, along with the following third-party packages:
 
 *   *readxl* for data import
-*   *tidyverse* for data transformation, including *ggplot2* for visualization
+*   *tidyverse* for data transformation, including *ggplot2* for visualization,*dplyr* for data manipulation tasks
     based on the grammar of graphics
-*   *knitr* for dynamic document generation
-*   *zoo* for interpolating annual population data from the decennial
-    U.S.\ census
+*   *ggreal* extension for ggplot2 that helps in preventing overlapping text labels in plots.
+*   *shadowtext* extension for ggplot2 that helps in adding shadow effects to text labels in plots.
+*   *countrycode* converting country names and codes into various coding schemes.
+*   *dbscan* for clustering data based on density.
+*   *FNN* for performing KNN classificatio.
+
 
 ```{=typst}
-#v(2em)
+#v(4em)
 ```
 
-<!-- # Improved Visualization -->
+
+
+
+
+# Improved Visualization
+
+```{r}
+#| label: fig-improved-on-poster
+#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2020"
+#| out-width: 90%
+
+include_graphics("images/final.png")
+```
 
 <!-- ```{r} -->
 <!-- #| label: fig-ggplot -->
