@@ -92,9 +92,9 @@
       (top: 1in, left: 2in, right: 2in, bottom: 2in),
     footer: [
       #set align(center)
-      #set text(32pt, white)
+      #set text(32pt, black)
       #block(
-        fill: rgb(228,51,44),
+        fill: rgb(238,232,170),
         width: 100%,
         inset: 20pt,
         radius: 10pt,

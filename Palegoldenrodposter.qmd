@@ -8,7 +8,7 @@ format:
     departments: "Palegoldenrod"
     institution-logo: "./images/sit-logo.png"
     footer-text: "Information Visualization 2024"
-    footer-emails: "Palegoldenrod"
+    footer-emails: "CSC3007 P1 Palegoldenrod"
 execute:
   echo: false
 ---
@@ -67,8 +67,8 @@ include_graphics("images/Previouschart.png")
 1.  *The inclusion of smoothing lines (trend lines).* It helps to visualize the general trends and relationships between the schooling index and the Corruption Perception Index within each global region.
 
 1.  *Use a discrete color palette.* Continuous palettes can make it
-    challenging for humans to detect patterns below just noticeable color
-    differences.
+    challenging for humans to detect patterns with little  color
+    differences. Consider using a qualitative ColorBrewer palette instead [^colorbrewer].
 1.  *Add a legend for population size* providing context about the scale of each country’s data.
 1.  *Divide into more sections* provides a clearer comparison of regions with different socio-economic backgrounds.
 
@@ -85,7 +85,7 @@ include_graphics("images/Previouschart.png")
 
 ## Data
 
-*   The data compares learning-adjusted years of schooling and the Corruption Perception Index for 2018 [^corruption-perception-index]. Learning-adjusted years of schooling integrate both the quantity and quality of education, acknowledging that similar duration of schooling can lead to different learning outcomes. The Corruption Perception Index from Transparency International measures perceived corruption, with lower values indicating higher perceived corruption.
+*   The data compares learning-adjusted years of schooling and the 2018 Corruption Perception Index (CPI) [^corruption-perception-index]. Learning-adjusted years account for both education quality and quantity, recognizing that similar schooling durations can yield different outcomes. The CPI from Transparency International measures perceived corruption, with lower values indicating higher corruption.
 *   We used data from the top 50 most popular countries [^top100].
 *   We edited the schooling index and corruption index to 0-100 to spread out the distribution of the geom points..
 
