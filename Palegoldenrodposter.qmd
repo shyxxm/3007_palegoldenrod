@@ -18,8 +18,7 @@ execute:
 #| include: false
 
 library(knitr)
-# purl("measles_prep.qmd")
-# source("measles_prep.R")
+purl("palegoldenrod_pre.qmd")
 ```
 
 
@@ -39,7 +38,8 @@ Education and corruption represent critical dimensions in understanding the soci
 
 ```{r}
 #| label: fig-wsj-on-poster
-#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2018"
+#| fig-cap: >
+#|  "Learning-adjusted years of schooling vs.Corruption Perception Index, 2018"
 #| out-width: 100%
 
 include_graphics("images/Previouschart.png")
@@ -109,80 +109,20 @@ We used the Quarto publication framework and the R programming language, along w
 *   *dbscan* for clustering data based on density.
 *   *FNN* for performing KNN classification.
 
-
 ```{=typst}
-#v(4em)
+#v(0em)
 ```
-
-
-
-
 
 # Improved Visualization
 
 ```{r}
 #| label: fig-improved-on-poster
-#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2018"
+#| fig-cap: "Average years of schooling vs. Corruption Perception Index, 2018"
 #| out-width: 100%
-#| out-height: 50%
+#| out-height: 45%
 
-include_graphics("images/final.png")
+include_graphics("images/Improvedchart.png")
 ```
-
-<!-- ```{r} -->
-<!-- #| label: fig-ggplot -->
-<!-- #| fig-cap: "Revised visualization of measles incidence by state of the USA and -->
-<!-- #|  year." -->
-<!-- #| fig-width: 6.0 -->
-<!-- #| fig-height: 5.8 -->
-<!-- #| out-width: 100% -->
-
-<!-- g <- -->
-<!--   ggplot(measles, aes(year + 0.5, state, fill = incidence + 1e-6)) + -->
-<!--   geom_tile(width = 0.75, height = 0.75) + -->
-<!--   geom_vline(xintercept = 1963, colour = "darkblue", linewidth = 1) + -->
-<!--   annotate( -->
-<!--     "label", -->
-<!--     label = "Vaccine introduced", -->
-<!--     x = 1963, -->
-<!--     y = 60, # 54.5, -->
-<!--     vjust = 1, -->
-<!--     hjust = 0 -->
-<!--   ) + -->
-<!--   labs( -->
-<!--     x = "Year", -->
-<!--     y = NULL, -->
-<!--     fill = "Mean weekly incidence\n(per 100,000) if known", -->
-<!--     title = "Measles in the USA by State", -->
-<!--     caption = "Source: Project Tycho" -->
-<!--   ) + -->
-<!--   scale_x_continuous(expand = expansion(0.01, 0)) + -->
-<!--   scale_y_discrete(limits = rev, position = "right") + -->
-<!--   scale_fill_fermenter( -->
-<!--     breaks = 10^(-2:3), -->
-<!--     labels = prettyNum, -->
-<!--     trans = "log10", -->
-<!--     palette = "Reds", -->
-<!--     direction = 1, -->
-<!--     na.value = "#ffffff00", -->
-<!--   ) + -->
-<!--   guides( -->
-<!--     y = guide_axis(n.dodge = 2), -->
-<!--     fill = guide_coloursteps(frame.colour = "gray", direction = "horizontal") -->
-<!--   ) + -->
-<!--   theme_minimal() + -->
-<!--   theme( -->
-<!--     legend.key.size = unit(0.75, "cm"), -->
-<!--     legend.title = element_text(hjust = 1, vjust = 1), -->
-<!--     legend.position = "top", -->
-<!--     panel.grid.major.x = element_line(colour = "gray", linewidth = 0.5), -->
-<!--     panel.grid.minor.x = element_line(colour = "gray", linewidth = 0.5), -->
-<!--     panel.grid.major.y = element_line(colour = "gray", linewidth = c(0, 0.5)), -->
-<!--     plot.title = element_text(hjust = 0.5) -->
-<!--   ) -->
-<!-- g -->
-<!-- ggsave("images/gg_measles.png", g, width = 6, height = 5.8) -->
-<!-- ``` -->
 
 
 # Further Suggestions for Interactivity
@@ -190,12 +130,6 @@ include_graphics("images/final.png")
 Because our visualization was intended for a poster, we did not implement any interactive features, including the infotip. However, if the data is visualized in an HTML document, interactive features can be achieved using the R packages such as *plotly*. In that case we recommend adding tooltips that display detailed information when hovering over a data point. This can include specific values for average years of schooling, the Corruption Perception Index, population size, and the country name. Tooltips enhance the user's ability to gain precise information without cluttering the visual.
 
 
-
-<!-- In that case, we recommend that the tile does not change its fill color. In contrast, the original visualization changes the fill color of the activated tile to light blue (see @fig-infotip_color_change), which can be misinterpreted as a change in incidence. Instead, we suggest highlighting the activated tile by thickening its border. -->
-
-
 # Conclusion
-
-<!-- We successfully implemented all suggested improvements for the non-interactive visualization. By labeling every state and choosing a colorblind-friendly palette, the revised plot is more accessible. The logarithmic color scale makes the decrease in incidence after the introduction of the vaccine less striking but enables readers to detect patterns in the low-incidence range more easily. -->
 
 We successfully implemented all suggested improvements for the non-interactive visualization. By separating global regions into distinct graphs and with a more intuitive legend for population sizes, the plots effectively highlight the relationship between average years of schooling and the Corruption Perception Index across various countries.The visual distinction between the Global North and Global South, along with the clear labeling of key countries, allows for easy interpretation of the data.

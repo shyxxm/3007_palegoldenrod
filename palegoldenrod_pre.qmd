@@ -1,0 +1,472 @@
+---
+title: "CSC3007 Palegoldenrod Part 1"
+subtitle: "Steps taken to preprocess the data & Initial Plotting"
+author:
+  - Chang Kai Wen
+  - Ho Zheng Wei
+  - Jonathan Au Wai Chong
+  - Lim Kei Yiang
+  - Shyam Prasad
+  - Tong Huiqing, Glennice
+date: 2024-07-03
+format: 
+  html:
+    theme: cosmo
+    css: style.css
+number-sections: true
+knitr:
+  opts_chunk:
+    fig.width: 7.5
+    fig.height: 5
+    fig.align: center
+    message: false
+execute:
+  warning: false
+---
+
+## Import library
+
+```{r}
+#| label: load-libraries
+
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+library(readr)
+library(countrycode)
+library(dbscan)
+library(FNN)
+library(shadowtext)
+```
+
+## Import data
+
+```{r}
+#| label: import-data
+#| message: false
+# Read the data
+data <- read_csv(
+  "average-years-of-schooling-vs-corruption-perception-index.csv"
+)
+
+# Inspect the data
+head(data)
+```
+
+## Add continent information
+
+```{r}
+#| label: add-continent-info
+#| warning: false
+
+# Add continent information using the countrycode package
+data <- data |>
+  mutate(
+    Continent = countrycode(
+      sourcevar = Entity,
+      origin = "country.name",
+      destination = "continent"
+    )
+  )
+
+# Check for any countries that couldn't be categorized
+any(is.na(data$continent))
+
+# Inspect the data with the new Continent column
+head(data)
+```
+
+## Filter data for the year 2018
+
+```{r}
+#| label: filter-data-2018
+#| message: false
+
+# Filter data for the year 2018 and remove NA continents
+data_2018 <- data |>
+  filter(Year == 2018 & !is.na(Continent))
+
+# Inspect the filtered data
+head(data_2018)
+```
+
+## Add Global North/South information
+
+```{r}
+#| label: add-global-region-info
+#| message: false
+
+# Define lists for Global North and South countries
+global_north <- c(
+  "United States", "Canada", "United Kingdom", "Germany",
+  "France", "Italy", "Spain", "Australia", "New Zealand",
+  "Japan", "South Korea", "Singapore", "Norway", "Sweden",
+  "Denmark", "Finland", "Netherlands", "Belgium", "Switzerland",
+  "Austria", "Ireland", "Luxembourg"
+)
+
+# Add Global North/South information
+data_2018 <- data_2018 |>
+  mutate(
+    Global_Region = ifelse(
+      Entity %in% global_north,
+      "Global North",
+      "Global South"
+    )
+  )
+
+# Inspect the data with the new Global Region column
+head(data_2018)
+```
+
+## Remove based on top known countries
+
+```{r}
+#| label: remove-top-known-countries
+#| message: false
+
+
+# List of top 50 well-known countries
+top_50_countries <- c(
+  "France", "United States", "Italy", "Spain",
+  "China", "Mexico", "Turkey", "Germany",
+  "United Kingdom", "Thailand", "Japan", "Canada",
+  "Russia", "Malaysia", "Greece", "Portugal",
+  "Austria", "Australia", "Netherlands", "Switzerland",
+  "Singapore", "South Korea", "Hong Kong", "Czech Republic",
+  "Poland", "Sweden", "Denmark", "Egypt",
+  "Croatia", "Norway", "Indonesia", "Ireland",
+  "Romania", "Belgium", "Vietnam", "Philippines",
+  "Argentina", "Finland", "Peru", "United Arab Emirates",
+  "Morocco", "Israel", "New Zealand", "Colombia",
+  "Bulgaria", "Saudi Arabia", "Hungary", "Tunisia", "Dominican Republic"
+)
+
+
+# List of countries to manually remove
+countries_to_remove <- c(
+  "Austria", "Germany", "Norway", "Denmark", "Australia", "Ireland",
+  "Peru", "Argentina", "Bulgaria", "Colombia", "Canada", "Netherlands"
+)
+
+# Filter to keep only the top 50 countries and remove specified countries
+data_2018_clean <- data_2018 |>
+  filter(Entity %in% top_50_countries & !Entity %in% countries_to_remove)
+
+# Verify the data after filtering
+unique(data_2018_clean$Entity)
+```
+
+## Convert "Average Years of Schooling" to an index
+
+```{r}
+#| label: convert-schooling-index
+#| message: false
+
+# Calculate min and max for scaling
+min_years <- min(
+  data_2018_clean$`Learning-Adjusted Years of School`,
+  na.rm = TRUE
+)
+max_years <- max(
+  data_2018_clean$`Learning-Adjusted Years of School`,
+  na.rm = TRUE
+)
+
+# Convert to index
+data_2018_clean <- data_2018_clean |>
+  mutate(
+    `Schooling Index` =
+      ((`Learning-Adjusted Years of School` - min_years)
+      / (max_years - min_years)) * 100
+  )
+
+data_2018_clean
+```
+
+## Set Up Basic Plot
+
+```{r}
+#| label: set-up-basic-plot
+#| message: false
+
+# Set up the basic plot
+basic_plot <- ggplot(
+  data_2018_clean,
+  aes(
+    x = `Corruption Perception Index - Transparency International (2018)`,
+    y = `Schooling Index`,
+    color = Global_Region
+  )
+) +
+  geom_point(
+    aes(
+      size = `Population (historical estimates)`
+    ),
+    alpha = 0.5
+  ) +
+  scale_size_area(
+    max_size = 25
+  ) + # Increase the maximum size
+  scale_size_continuous(
+    range = c(10, 30)
+  ) + # Increase the range of sizes
+  scale_x_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, by = 10)
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, by = 10)
+  ) # Set y-axis limits to 0-100 and adjust breaks
+
+# Display the basic plot
+basic_plot
+```
+
+## Add Labels
+
+```{r}
+#| label: add-labels
+#| message: false
+
+# Create a named list for xy coordinates
+global_north_label_coords <- list(
+  "South Korea" = c(60, 93),
+  "Japan" = c(78, 100),
+  "France" = c(69, 86),
+  "Italy" = c(52, 71),
+  "Spain" = c(60, 67),
+  "United States" = c(77, 68),
+  "Belgium" = c(78, 77),
+  "Switzerland" = c(91, 75),
+  "Singapore" = c(92, 100),
+  "New Zealand" = c(95.5, 83),
+  "Sweden" = c(91.5, 89),
+  "Finland" = c(91, 95),
+  "UK" = c(80, 87)
+)
+
+global_south_label_coords <- list(
+  "Russia" = c(34, 90),
+  "Vietnam" = c(27, 74),
+  "Mexico" = c(26, 38),
+  "Dominican Republic" = c(22, 15),
+  "Egypt" = c(33, 3),
+  "Tunisia" = c(48, 9),
+  "Morocco" = c(49, 1),
+  "Indonesia" = c(37, 24),
+  "Romania" = c(53, 37),
+  "Saudi Arabia" = c(54, 26),
+  "Malaysia" = c(50, 57),
+  "Greece" = c(50, 64),
+  "Croatia" = c(50, 79),
+  "Poland" = c(55, 87),
+  "Israel" = c(58, 75),
+  "Portugal" = c(68, 92),
+  "United Arab Emirates" = c(72, 53),
+  "Hong Kong" = c(84, 95),
+  "China" = c(34, 55)
+)
+
+# Convert the named list into a dataframe
+global_north_labels <- data.frame(
+  Entity = names(global_north_label_coords),
+  x = sapply(global_north_label_coords, function(coord) coord[1]),
+  y = sapply(global_north_label_coords, function(coord) coord[2]),
+  Global_Region = rep("Global North", length(global_north_label_coords))
+)
+
+global_south_labels <- data.frame(
+  Entity = names(global_south_label_coords),
+  x = sapply(global_south_label_coords, function(coord) coord[1]),
+  y = sapply(global_south_label_coords, function(coord) coord[2]),
+  Global_Region = rep("Global South", length(global_south_label_coords))
+)
+
+# Combine the two dataframes
+labels_data <- rbind(global_north_labels, global_south_labels)
+
+# Create a plot with manually positioned labels
+# with a white stroke effect using shadowtext
+plot_with_labels <- basic_plot +
+  geom_shadowtext(aes(x = x, y = y, label = Entity, color = Global_Region),
+    data = labels_data,
+    size = 8,
+    fontface = "bold",
+    family = "sans",
+    bg.color = "white", # Shadow color
+    bg.r = 0.15 # Radius of the shadow
+  ) +
+  # Ensure point sizes are scaled correctly
+  scale_size_continuous(range = c(10, 30)) +
+  # Remove size effect from legend
+  guides(size = guide_legend(override.aes = list(nudge_x = 0, nudge_y = 0))) +
+  theme_minimal() # Optional: Use a minimal theme for better visual appeal
+
+# Display the plot with all labels
+plot_with_labels
+```
+
+## Add Trend Curve
+
+```{r}
+#| label: add-trend-curve
+#| message: false
+
+# Add a trend curve to the plot using stat_smooth
+plot_with_trend <- plot_with_labels +
+  geom_smooth(
+    aes(
+      weight = `Population (historical estimates)`
+    ),
+    method = "loess",
+    color = "grey50",
+    fill = "lightgrey",
+    alpha = 0.6,
+    formula = y ~ x,
+    se = FALSE
+  ) # Darken the confidence interval area
+
+# Display the plot with trend curve
+plot_with_trend
+```
+
+## Add Annotations
+
+```{r}
+#| label: add-annotations
+#| message: false
+
+# Add annotations to the plot
+plot_with_annotations <- plot_with_trend +
+  labs(
+    title = "Schooling Index vs. Corruption Perception Index, 2018",
+    x = "Corruption Perception Index",
+    y = "Schooling Index",
+    size = "Population",
+    color = "Global Region",
+    caption = "Source: Transparency International"
+  )
+
+# Display the annotated plot
+plot_with_annotations
+```
+
+## Change Size Scale
+
+```{r}
+#| label: change-size-scale
+#| message: false
+
+# Change the size scale in the plot
+plot_with_size_scale <- plot_with_annotations +
+  scale_size_continuous(
+    breaks = c(1e6, 1e7, 1e8, 1e9),
+    labels = c("1M", "10M", "100M", "1B"),
+    range = c(10, 30) # Increase the size range of the points
+  )
+
+# Display the plot with updated size scale
+plot_with_size_scale
+```
+
+## Change Color Scale
+
+```{r}
+#| label: change-color-scale
+#| message: false
+
+# Change the color scale to ColorBrewer palette "Set1"
+plot_with_color_scale <- plot_with_size_scale +
+  scale_color_brewer(palette = "Set1")
+
+# Display the plot with updated color scale
+plot_with_color_scale
+```
+
+## Override Transparency in Legend
+
+```{r}
+#| label: override-transparency
+#| message: false
+# Override transparency in the legend and increase size of legend circles
+plot_with_legend <- plot_with_color_scale +
+  # Ensure the color legend is first
+  guides(
+    color = guide_legend(
+      order = 1,
+      override.aes = list(
+        alpha = 1,
+        size = 7
+      )
+    ),
+    # Ensure the size legend is second and slightly increase the circle sizes
+    size = guide_legend(
+      order = 2,
+      override.aes = list(alpha = 1)
+    )
+  )
+
+# Display the plot with updated legend
+plot_with_legend
+```
+
+## Applying a ggplot2 Theme
+
+```{r, fig.width=18, fig.height=20}
+#| label: apply-theme
+
+# Apply a theme to the plot
+final_plot <- plot_with_legend +
+  theme_minimal(base_family = "serif") + # Use a serif font
+  theme(
+    legend.position = "top",
+    # Arrange legends horizontally
+    legend.direction = "horizontal",
+    # Put legends in a horizontal box
+    legend.box = "horizontal",
+    # Center the legend box
+    legend.box.just = "center",
+    # Ensure the legend keys are blank,
+    legend.key = element_blank(),
+    # Increase the size of legend text
+    legend.text = element_text(size = 28),
+    # Increase the size of legend titles
+    legend.title = element_text(size = 32, face = "bold"),
+    # Increase the size of the legend keys
+    legend.key.size = unit(1.2, "lines"),
+    # Remove the facet labels
+    strip.text = element_blank(),
+    # Center the title
+    plot.title = element_text(size = 48, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 36),
+    # Increase the font size of axis labels,
+    axis.text = element_text(size = 24),
+    # Slightly darken background of the panel
+    panel.background = element_rect(fill = "grey95"),
+    # Set major grid lines to white
+    panel.grid.major = element_line(color = "white"),
+    # Hide minor grid lines
+    panel.grid.minor = element_blank(),
+    # Increase space between facet plots
+    panel.spacing = unit(1, "lines"),
+    # Increase the size of the caption
+    plot.caption = element_text(size = 26)
+  ) +
+  # Set y-axis limits to start at 0, adjust breaks, and
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
+  # Set y-axis limits to start at 0, adjust breaks, and
+  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
+  # Arrange plots in rows with individual x-axis labels
+  facet_wrap(~Global_Region, scales = "free_x", ncol = 1)
+
+# Display the final plot
+final_plot
+```
+
+```{r}
+#| label: save-plot
+
+ggsave("images/Improvedchart.png", final_plot, width = 18, height = 20)
+```
