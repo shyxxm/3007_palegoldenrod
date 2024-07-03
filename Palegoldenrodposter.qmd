@@ -113,7 +113,7 @@ We used the Quarto publication framework and the R programming language, along w
 *   *shadowtext* extension for ggplot2 that helps in adding shadow effects to text labels in plots.
 *   *countrycode* converting country names and codes into various coding schemes.
 *   *dbscan* for clustering data based on density.
-*   *FNN* for performing KNN classificatio.
+*   *FNN* for performing KNN classification.
 
 
 ```{=typst}
@@ -128,7 +128,7 @@ We used the Quarto publication framework and the R programming language, along w
 
 ```{r}
 #| label: fig-improved-on-poster
-#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2020"
+#| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2018"
 #| out-width: 90%
 
 include_graphics("images/final.png")
@@ -192,7 +192,7 @@ include_graphics("images/final.png")
 
 # Further Suggestions for Interactivity
 
-Because our visualization was intended for a poster, we did not implement any interactive features, including the infotip. However, if the data are visualized in an HTML document, interactive features can be achieved using the R packages such as *plotly*. In that case we recommend customizing the hover information to provide detailed insights when users interact with the data points. This can be done by setting the tooltip parameter in ggplotly().
+Because our visualization was intended for a poster, we did not implement any interactive features, including the infotip. However, if the data is visualized in an HTML document, interactive features can be achieved using the R packages such as *plotly*. In that case we recommend customizing the hover information to provide detailed insights when users interact with the data points. This can be done by setting the tooltip parameter in ggplotly().
 
 
 
@@ -203,4 +203,4 @@ Because our visualization was intended for a poster, we did not implement any in
 
 <!-- We successfully implemented all suggested improvements for the non-interactive visualization. By labeling every state and choosing a colorblind-friendly palette, the revised plot is more accessible. The logarithmic color scale makes the decrease in incidence after the introduction of the vaccine less striking but enables readers to detect patterns in the low-incidence range more easily. -->
 
-We successfully implemented all suggested improvements for the non-interactive visualization. By differentiating global regions with distinct colors and representing population sizes with bubble sizes, the plot effectively highlights the relationship between average years of schooling and the Corruption Perception Index across various countries. The choice of a colorblind-friendly palette ensures accessibility for a broader audience. The visual distinction between the Global North and Global South, along with the clear labeling of key countries, allows for easy interpretation of the data.
+We successfully implemented all suggested improvements for the non-interactive visualization. By separating global regions into distinct graphs and representing population sizes with bubble sizes, the plots effectively highlight the relationship between average years of schooling and the Corruption Perception Index across various countries.The visual distinction between the Global North and Global South, along with the clear labeling of key countries, allows for easy interpretation of the data.
