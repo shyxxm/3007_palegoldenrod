@@ -123,7 +123,8 @@ We used the Quarto publication framework and the R programming language, along w
 ```{r}
 #| label: fig-improved-on-poster
 #| fig-cap: "Learning-adjusted years of schooling vs. Corruption Perception Index, 2018"
-#| out-width: 90%
+#| out-width: 100%
+#| out-height: 50%
 
 include_graphics("images/final.png")
 ```
