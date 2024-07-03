@@ -1,0 +1,183 @@
+---
+title: "CSC3007 Palegoldenrod Data Preprocessing"
+subtitle: "Steps taken to preprocess the data"
+author:
+  - Chang Kai Wen
+  - Ho Zheng Wei
+  - Jonathan Au Wai Chong
+  - Lim Kei Yiang
+  - Shyam Prasad
+  - Tong Huiqing, Glennice
+date: 2024-07-03
+format: 
+  html:
+    theme: cosmo
+    css: style.css
+number-sections: true
+knitr:
+  opts_chunk:
+    fig.width: 7.5
+    fig.height: 5
+    fig.align: center
+    message: false
+execute:
+  warning: false
+---
+
+## Import library
+
+```{r}
+#| label: load-libraries
+
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+library(readr)
+library(countrycode)
+library(dbscan)
+library(FNN)
+library(shadowtext)
+```
+
+## Import data
+
+```{r}
+#| label: import-data
+#| message: false
+# Read the data
+data <- read_csv(
+  "average-years-of-schooling-vs-corruption-perception-index.csv"
+)
+
+# Inspect the data
+head(data)
+```
+
+## Add continent information
+
+```{r}
+#| label: add-continent-info
+#| warning: false
+
+# Add continent information using the countrycode package
+data <- data |>
+  mutate(
+    Continent = countrycode(
+      sourcevar = Entity,
+      origin = "country.name",
+      destination = "continent"
+    )
+  )
+
+# Check for any countries that couldn't be categorized
+any(is.na(data$continent))
+
+# Inspect the data with the new Continent column
+head(data)
+```
+## Filter data for the year 2018
+
+```{r}
+#| label: filter-data-2018
+#| message: false
+
+# Filter data for the year 2018 and remove NA continents
+data_2018 <- data |>
+  filter(Year == 2018 & !is.na(Continent))
+
+# Inspect the filtered data
+head(data_2018)
+```
+
+## Add Global North/South information
+
+```{r}
+#| label: add-global-region-info
+#| message: false
+
+# Define lists for Global North and South countries
+global_north <- c(
+  "United States", "Canada", "United Kingdom", "Germany",
+  "France", "Italy", "Spain", "Australia", "New Zealand",
+  "Japan", "South Korea", "Singapore", "Norway", "Sweden",
+  "Denmark", "Finland", "Netherlands", "Belgium", "Switzerland",
+  "Austria", "Ireland", "Luxembourg"
+)
+
+# Add Global North/South information
+data_2018 <- data_2018 |>
+  mutate(
+    Global_Region = ifelse(
+      Entity %in% global_north,
+      "Global North",
+      "Global South"
+    )
+  )
+
+# Inspect the data with the new Global Region column
+head(data_2018)
+```
+
+## Remove based on top known countries
+
+```{r}
+#| label: remove-top-known-countries
+#| message: false
+
+
+# List of top 50 well-known countries
+top_50_countries <- c(
+  "France", "United States", "Italy", "Spain",
+  "China", "Mexico", "Turkey", "Germany",
+  "United Kingdom", "Thailand", "Japan", "Canada",
+  "Russia", "Malaysia", "Greece", "Portugal",
+  "Austria", "Australia", "Netherlands", "Switzerland",
+  "Singapore", "South Korea", "Hong Kong", "Czech Republic",
+  "Poland", "Sweden", "Denmark", "Egypt",
+  "Croatia", "Norway", "Indonesia", "Ireland",
+  "Romania", "Belgium", "Vietnam", "Philippines",
+  "Argentina", "Finland", "Peru", "United Arab Emirates",
+  "Morocco", "Israel", "New Zealand", "Colombia",
+  "Bulgaria", "Saudi Arabia", "Hungary", "Tunisia", "Dominican Republic"
+)
+
+
+# List of countries to manually remove
+countries_to_remove <- c(
+  "Austria", "Germany", "Norway", "Denmark", "Australia", "Ireland",
+  "Peru", "Argentina", "Bulgaria", "Colombia", "Canada", "Netherlands"
+)
+
+# Filter to keep only the top 50 countries and remove specified countries
+data_2018_clean <- data_2018 |>
+  filter(Entity %in% top_50_countries & !Entity %in% countries_to_remove)
+
+# Verify the data after filtering
+unique(data_2018_clean$Entity)
+```
+
+## Convert "Average Years of Schooling" to an index
+
+```{r}
+#| label: convert-schooling-index
+#| message: false
+
+# Calculate min and max for scaling
+min_years <- min(
+  data_2018_clean$`Learning-Adjusted Years of School`,
+  na.rm = TRUE
+)
+max_years <- max(
+  data_2018_clean$`Learning-Adjusted Years of School`,
+  na.rm = TRUE
+)
+
+# Convert to index
+data_2018_clean <- data_2018_clean |>
+  mutate(
+    `Schooling Index` = ((`Learning-Adjusted Years of School` - min_years) /
+      (max_years - min_years)) * 100
+  )
+
+data_2018_clean
+```
