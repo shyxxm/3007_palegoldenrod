@@ -39,7 +39,7 @@ Education and corruption represent critical dimensions in understanding the soci
 ```{r}
 #| label: fig-wsj-on-poster
 #| fig-cap: >
-#|  "Learning-adjusted years of schooling vs.Corruption Perception Index, 2018"
+#|  Learning-adjusted years of schooling vs.Corruption Perception Index, 2018
 #| out-width: 100%
 
 include_graphics("images/Previouschart.png")
@@ -66,15 +66,15 @@ include_graphics("images/Previouschart.png")
 
 1.  *The inclusion of smoothing lines (trend lines).* It helps to visualize the general trends and relationships between the schooling index and the Corruption Perception Index within each global region.
 
-1.  *Use a discrete color palette.* Continuous palettes can make it
+2.  *Use a discrete color palette.* Continuous palettes can make it
     challenging for humans to detect patterns with little  color
     differences. Consider using a qualitative ColorBrewer palette instead [^colorbrewer].
     
-1.  *Divide into differnt charts* provides a clearer comparison of regions with different socio-economic backgrounds.
+3.  *Divide into differnt charts* provides a clearer comparison of regions with different socio-economic backgrounds.
 
-1.  *Removing some of the lesser-known or less-popular countries* simplifies the visualization, reducing clutter and focusing attention on the more significant data points that are likely to be more familiar and relevant to the audience.
+4.  *Removing some of the lesser-known or less-popular countries* simplifies the visualization, reducing clutter and focusing attention on the more significant data points that are likely to be more familiar and relevant to the audience.
 
-1.  *Misleading Title* : Correct the header for the graph to accurately indicate the year the data is sourced from.
+5.  *Misleading Title* : Correct the header for the graph to accurately indicate the year the data is sourced from.
 
     
 [^colorbrewer]: <https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5>
@@ -87,11 +87,8 @@ include_graphics("images/Previouschart.png")
 
 *   The data compares learning-adjusted years of schooling and the 2018 Corruption Perception Index (CPI) [^corruption-perception-index]. Learning-adjusted years account for both education quality and quantity, recognizing that similar schooling durations can yield different outcomes. The CPI from Transparency International measures perceived corruption, with lower values indicating higher corruption.
 *   We used data from the top 50 most popular countries [^top100].
-*   We edited the schooling index and corruption index to 0-100 to spread out the distribution of the geom points..
+*   We edited the schooling index and corruption index to 0-100 to spread out the distribution of the geom points.
 
-
-<!-- [^panhuis_counts_2018]: <https://doi.org/10.25337/T7/ptycho.v2.0/US.14189004> -->
-<!-- [^stats_state_2023]: <https://www.stats.indiana.edu/population/PopTotals/historic_counts_states.asp> -->
 [^corruption-perception-index]: <https://ourworldindata.org/grapher/average-years-of-schooling-vs-corruption-perception-index>
 
 [^top100]: <https://worldeducators.org/pages/top-100-countries-for-tourists>
@@ -101,8 +98,7 @@ include_graphics("images/Previouschart.png")
 We used the Quarto publication framework and the R programming language, along with the following third-party packages:
 
 *   *readxl* for data import
-*   *tidyverse* for data transformation, including *ggplot2* for visualization,*dplyr* for data manipulation tasks
-    based on the grammar of graphics
+*   *tidyverse* specifically *dplyr* for manipulation and *ggplot2* for visualization
 *   *ggreal* extension for ggplot2 that helps in preventing overlapping text labels in plots.
 *   *shadowtext* extension for ggplot2 that helps in adding shadow effects to text labels in plots.
 *   *countrycode* converting country names and codes into various coding schemes.
@@ -117,7 +113,7 @@ We used the Quarto publication framework and the R programming language, along w
 
 ```{r}
 #| label: fig-improved-on-poster
-#| fig-cap: "Average years of schooling vs. Corruption Perception Index, 2018"
+#| fig-cap: "Schooling Index vs. Corruption Perception Index, 2018"
 #| out-width: 100%
 #| out-height: 45%
 
